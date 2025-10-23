@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SRIKANDI - Sistem Tanda Tangan Digital">
+    <title>Login - SRIKANDI</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/login.css">
+    
+    <!-- Favicon (opsional, bisa ditambahkan nanti) -->
+    <link rel="icon" type="image/png" href="../assets/logo/favicon.png">
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-card">
+                <!-- Header -->
+                <div class="login-header">
+                    <div class="login-logo">
+                        <img src="../assets/logo/logo-perusahaan.png" alt="Logo" id="logoImage">
+                    </div>
+                    <h1 class="login-title">SRIKANDI</h1>
+                    <p class="login-subtitle">Sistem Tanda Tangan Digital</p>
+                </div>
+
+                <!-- Alert -->
+                <div id="loginAlert" class="login-alert hidden"></div>
+
+                <!-- Form -->
+                <form id="loginForm" class="login-form">
+                    <div class="login-input-group">
+                        <span class="login-input-icon">👤</span>
+                        <input 
+                            type="text" 
+                            id="nipInput"
+                            class="login-input" 
+                            placeholder="Nomor Induk Pegawai (NIP)"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <div class="login-input-group">
+                        <span class="login-input-icon">🔒</span>
+                        <input 
+                            type="password" 
+                            id="pinInput"
+                            class="login-input" 
+                            placeholder="PIN (6 digit)"
+                            required
+                            maxlength="6"
+                            pattern="[0-9]{6}"
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <button type="submit" id="loginButton" class="login-submit">
+                        <span id="loginButtonText">Masuk</span>
+                    </button>
+                </form>
+
+                <!-- Footer -->
+                <div class="login-footer">
+                    <p class="login-footer-text">
+                        Sistem Tanda Tangan Digital<br>
+                        <strong id="agencyName">Loading...</strong>
+                    </p>
+                    <p class="login-version">
+                        Version 1.0.0 | © 2025 SRIKANDI
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>

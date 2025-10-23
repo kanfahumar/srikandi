@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - SRIKANDI</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <span>🔐</span>
+                </div>
+                <div class="sidebar-title">
+                    <h2>SRIKANDI</h2>
+                    <p>Super Admin</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="sidebar-section">
+                    <p class="sidebar-section-title">Menu Utama</p>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link active" data-page="dashboard">
+                                <span class="sidebar-menu-icon">📊</span>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" data-page="users">
+                                <span class="sidebar-menu-icon">👥</span>
+                                Manajemen User
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" data-page="documents">
+                                <span class="sidebar-menu-icon">📄</span>
+                                Dokumen
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" data-page="upload">
+                                <span class="sidebar-menu-icon">📤</span>
+                                Upload Gaji
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <p class="sidebar-section-title">Lainnya</p>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" data-page="settings">
+                                <span class="sidebar-menu-icon">⚙️</span>
+                                Pengaturan
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="../validate.html" class="sidebar-menu-link">
+                                <span class="sidebar-menu-icon">✓</span>
+                                Validasi Dokumen
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar" id="userAvatar">A</div>
+                    <div class="sidebar-user-info">
+                        <p class="sidebar-user-name" id="userName">Loading...</p>
+                        <p class="sidebar-user-role" id="userRole">Super Admin</p>
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-block btn-sm" onclick="logout()">
+                    🚪 Keluar
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <div class="topbar-title">
+                        <h1 id="pageTitle">Dashboard</h1>
+                        <p class="topbar-breadcrumb" id="pageBreadcrumb">Home / Dashboard</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <span class="text-sm text-gray" id="currentDate">Loading...</span>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area" id="contentArea">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon primary">
+                                <span>👥</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="totalUsers">0</div>
+                        <p class="stat-card-label">Total Karyawan</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon success">
+                                <span>📄</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="totalDocuments">0</div>
+                        <p class="stat-card-label">Total Dokumen</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon success">
+                                <span>✓</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="totalSigned">0</div>
+                        <p class="stat-card-label">Sudah Ditandatangani</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon warning">
+                                <span>⏱️</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="totalPending">0</div>
+                        <p class="stat-card-label">Menunggu Tanda Tangan</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="showPage('users')">
+                        👥 Tambah User Baru
+                    </button>
+                    <button class="btn btn-primary" onclick="showPage('upload')">
+                        📤 Upload Data Gaji
+                    </button>
+                    <button class="btn btn-outline" onclick="refreshDashboard()">
+                        🔄 Refresh Data
+                    </button>
+                </div>
+
+                <!-- Recent Documents -->
+                <div class="data-section">
+                    <div class="data-section-header">
+                        <h3 class="data-section-title">Dokumen Terbaru</h3>
+                        <div class="data-section-actions">
+                            <div class="search-box">
+                                <input type="text" placeholder="Cari dokumen..." id="searchDoc">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="documentsTableContainer">
+                        <!-- Table akan di-generate oleh JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Tambah User -->
+    <div id="addUserModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Tambah User Baru</h3>
+                <button class="modal-close" onclick="closeModal('addUserModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label class="form-label form-label-required">NIP</label>
+                        <input type="text" class="form-input" id="newUserNip" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label-required">Nama Lengkap</label>
+                        <input type="text" class="form-input" id="newUserName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label-required">Email</label>
+                        <input type="email" class="form-input" id="newUserEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">No. HP</label>
+                        <input type="tel" class="form-input" id="newUserPhone">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Jabatan</label>
+                        <input type="text" class="form-input" id="newUserJabatan">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Pangkat</label>
+                        <input type="text" class="form-input" id="newUserPangkat">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label-required">Role</label>
+                        <select class="form-select" id="newUserRole" required>
+                            <option value="user">User Biasa</option>
+                            <option value="bendahara">Bendahara</option>
+                            <option value="super_admin">Super Admin</option>
+                        </select>
+                    </div>
+
+                    <div id="addUserAlert" class="alert hidden"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addUserModal')">Batal</button>
+                <button class="btn btn-primary" onclick="submitAddUser()">Simpan User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

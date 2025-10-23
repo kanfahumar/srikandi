@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanda Tangan Dokumen - SRIKANDI</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/login.css">
+    
+    <style>
+        .document-preview {
+            background: var(--gray-50);
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin: var(--spacing-lg) 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .document-info {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .document-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .document-info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .document-info-label {
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+        
+        .document-info-value {
+            color: var(--gray-900);
+        }
+        
+        .salary-table {
+            width: 100%;
+            margin-top: var(--spacing-md);
+        }
+        
+        .salary-table td {
+            padding: var(--spacing-sm);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .salary-table td:first-child {
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        .salary-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .salary-table tr.total td {
+            border-top: 2px solid var(--gray-900);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--primary-600);
+            padding-top: var(--spacing-md);
+        }
+        
+        .checkbox-group {
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: start;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .checkbox-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-top: 4px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+        
+        .success-animation {
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+        
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-lg);
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        .expired-message {
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+        
+        .expired-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-lg);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-container" style="max-width: 600px;">
+            <div class="login-card">
+                <!-- Header -->
+                <div class="login-header">
+                    <div class="login-logo">
+                        <span>📝</span>
+                    </div>
+                    <h1 class="login-title">Tanda Tangan Dokumen</h1>
+                    <p class="login-subtitle">SRIKANDI - Sistem Tanda Tangan Digital</p>
+                </div>
+
+                <!-- Content akan diganti berdasarkan status -->
+                <div id="signatureContent">
+                    <!-- Step 1: Verifikasi -->
+                    <div id="verificationStep">
+                        <p class="text-center mb-3">
+                            Masukkan NIP dan Kode Verifikasi yang telah dikirim melalui email untuk melanjutkan.
+                        </p>
+
+                        <div id="verificationAlert" class="login-alert hidden"></div>
+
+                        <form id="verificationForm" class="login-form">
+                            <div class="login-input-group">
+                                <span class="login-input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    id="nipInput"
+                                    class="login-input" 
+                                    placeholder="Nomor Induk Pegawai (NIP)"
+                                    required
+                                >
+                            </div>
+
+                            <div class="login-input-group">
+                                <span class="login-input-icon">🔑</span>
+                                <input 
+                                    type="text" 
+                                    id="passcodeInput"
+                                    class="login-input" 
+                                    placeholder="Kode Verifikasi (8 karakter)"
+                                    required
+                                    maxlength="8"
+                                    style="text-transform: uppercase;"
+                                >
+                            </div>
+
+                            <button type="submit" id="verifyButton" class="login-submit">
+                                <span id="verifyButtonText">Verifikasi</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: Preview & Sign (Hidden by default) -->
+                    <div id="signStep" class="hidden">
+                        <!-- Document Preview akan di-generate oleh JavaScript -->
+                    </div>
+
+                    <!-- Step 3: Success (Hidden by default) -->
+                    <div id="successStep" class="hidden">
+                        <div class="success-animation">
+                            <div class="success-icon">✅</div>
+                            <h2 style="margin-bottom: var(--spacing-md);">Dokumen Berhasil Ditandatangani!</h2>
+                            <p class="text-gray mb-4">
+                                Dokumen telah ditandatangani pada:<br>
+                                <strong id="signedDateTime">-</strong>
+                            </p>
+                            <p class="text-sm text-gray">
+                                Terima kasih telah menandatangani dokumen ini.<br>
+                                Anda dapat menutup halaman ini.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Expired Message (Hidden by default) -->
+                    <div id="expiredStep" class="hidden">
+                        <div class="expired-message">
+                            <div class="expired-icon">⏰</div>
+                            <h2 style="margin-bottom: var(--spacing-md);">Link Sudah Kadaluarsa</h2>
+                            <p class="text-gray">
+                                Maaf, link tanda tangan ini sudah tidak berlaku.<br>
+                                Silakan hubungi Bendahara Gaji untuk mendapatkan link baru.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="login-footer">
+                    <p class="login-version">
+                        Version 1.0.0 | © 2025 SRIKANDI
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../js/config.js"></script>
+    <script src="../js/signature.js"></script>
+</body>
+</html>
