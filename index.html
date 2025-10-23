@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRIKANDI - Sistem Tanda Tangan Digital</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/main.css">
+    
+    <style>
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+        
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-2xl);
+            align-items: center;
+        }
+        
+        .hero-text {
+            color: white;
+        }
+        
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.2;
+            color: white;
+        }
+        
+        .hero-text p {
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .hero-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .feature-icon {
+            font-size: 28px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .feature-text h3 {
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-xs);
+            color: var(--gray-900);
+        }
+        
+        .feature-text p {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            margin: 0;
+        }
+        
+        .btn-hero {
+            padding: 1rem 2rem;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-hero-primary {
+            background: white;
+            color: var(--primary-600);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-hero-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn-hero-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 968px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .feature-item {
+                text-align: left;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn-hero {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="hero-content">
+            <!-- Left Column - Text -->
+            <div class="hero-text">
+                <h1>🔐 SRIKANDI</h1>
+                <p>
+                    <strong>Sistem Tanda Tangan Digital</strong> yang aman, cepat, dan mudah digunakan 
+                    untuk penandatanganan dokumen digital di lingkungan pemerintahan.
+                </p>
+                
+                <div class="hero-buttons">
+                    <a href="./pages/login.html" class="btn-hero btn-hero-primary">
+                        🔑 Masuk ke Sistem
+                    </a>
+                    <a href="./validate.html" class="btn-hero btn-hero-secondary">
+                        ✓ Validasi Dokumen
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Right Column - Features Card -->
+            <div class="hero-card">
+                <h2 style="font-size: var(--font-size-2xl); margin-bottom: var(--spacing-md); color: var(--gray-900);">
+                    Fitur Unggulan
+                </h2>
+                <p style="color: var(--gray-600); margin-bottom: var(--spacing-xl);">
+                    Sistem yang dirancang khusus untuk memudahkan proses penandatanganan dokumen secara digital
+                </p>
+                
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">🔒</div>
+                        <div class="feature-text">
+                            <h3>Aman & Terverifikasi</h3>
+                            <p>Setiap tanda tangan dilengkapi dengan QR Code untuk validasi keaslian dokumen</p>
+                        </div>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-text">
+                            <h3>Cepat & Efisien</h3>
+                            <p>Proses penandatanganan dapat dilakukan kapan saja dan dimana saja melalui link unik</p>
+                        </div>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <div class="feature-icon">📧</div>
+                        <div class="feature-text">
+                            <h3>Notifikasi Email Otomatis</h3>
+                            <p>Setiap dokumen yang perlu ditandatangani akan dikirim otomatis melalui email</p>
+                        </div>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-text">
+                            <h3>Dashboard Monitoring</h3>
+                            <p>Pantau status penandatanganan dokumen secara real-time melalui dashboard admin</p>
+                        </div>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <div class="feature-icon">🕒</div>
+                        <div class="feature-text">
+                            <h3>Audit Trail Lengkap</h3>
+                            <p>Setiap tanda tangan tercatat dengan timestamp dan IP address untuk keamanan maksimal</p>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div style="text-align: center; padding-top: var(--spacing-lg); border-top: 1px solid var(--gray-200);">
+                    <p style="font-size: var(--font-size-sm); color: var(--gray-600); margin: 0;">
+                        Sudah digunakan oleh <strong id="agencyName">-</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="./js/config.js"></script>
+    <script>
+        // Load agency name
+        document.addEventListener('DOMContentLoaded', function() {
+            const agencyNameEl = document.getElementById('agencyName');
+            if (agencyNameEl) {
+                agencyNameEl.textContent = CONFIG.AGENCY.name;
+            }
+        });
+    </script>
+</body>
+</html>

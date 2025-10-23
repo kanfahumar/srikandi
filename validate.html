@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validasi Dokumen - SRIKANDI</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/login.css">
+    
+    <style>
+        .validation-result {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .validation-header {
+            text-align: center;
+            padding: var(--spacing-xl);
+            border-bottom: 2px solid var(--gray-200);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .validation-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .validation-icon.valid {
+            color: var(--success);
+        }
+        
+        .validation-icon.invalid {
+            color: var(--error);
+        }
+        
+        .validation-status {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .validation-status.valid {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+        
+        .validation-status.invalid {
+            background-color: var(--error-light);
+            color: var(--error);
+        }
+        
+        .validation-info {
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+        }
+        
+        .validation-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .validation-info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .validation-info-label {
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+        
+        .validation-info-value {
+            color: var(--gray-900);
+            text-align: right;
+        }
+        
+        .signatures-list {
+            margin-top: var(--spacing-lg);
+        }
+        
+        .signature-item {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .signature-check {
+            font-size: 24px;
+            color: var(--success);
+        }
+        
+        .signature-details {
+            flex: 1;
+        }
+        
+        .signature-name {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+        
+        .signature-time {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-container" style="max-width: 700px;">
+            <div class="login-card">
+                <!-- Header -->
+                <div class="login-header">
+                    <div class="login-logo">
+                        <span>✓</span>
+                    </div>
+                    <h1 class="login-title">Validasi Dokumen</h1>
+                    <p class="login-subtitle">SRIKANDI - Sistem Tanda Tangan Digital</p>
+                </div>
+
+                <!-- Search Form -->
+                <div id="searchForm">
+                    <p class="text-center mb-3">
+                        Masukkan ID Dokumen atau scan QR Code untuk memvalidasi keaslian dokumen.
+                    </p>
+
+                    <div id="searchAlert" class="login-alert hidden"></div>
+
+                    <form id="validateForm" class="login-form">
+                        <div class="login-input-group">
+                            <span class="login-input-icon">🔍</span>
+                            <input 
+                                type="text" 
+                                id="docIdInput"
+                                class="login-input" 
+                                placeholder="ID Dokumen (contoh: DOC1234567890)"
+                                required
+                            >
+                        </div>
+
+                        <button type="submit" id="validateButton" class="login-submit">
+                            <span id="validateButtonText">Validasi Dokumen</span>
+                        </button>
+                    </form>
+
+                    <p class="text-center text-xs text-gray mt-3">
+                        ID Dokumen dapat ditemukan pada QR Code di dokumen yang telah ditandatangani.
+                    </p>
+                </div>
+
+                <!-- Validation Result (Hidden by default) -->
+                <div id="validationResult" class="hidden">
+                    <!-- Result akan di-generate oleh JavaScript -->
+                </div>
+
+                <div class="login-footer" style="margin-top: var(--spacing-xl);">
+                    <button class="btn btn-secondary btn-block btn-sm" onclick="resetValidation()">
+                        🔄 Validasi Dokumen Lain
+                    </button>
+                    <p class="login-version" style="margin-top: var(--spacing-md);">
+                        Version 1.0.0 | © 2025 SRIKANDI
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="./js/config.js"></script>
+    <script>
+        // Get doc ID from URL if accessed via QR Code
+        const urlParams = new URLSearchParams(window.location.search);
+        const docIdFromUrl = urlParams.get('doc');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto validate if doc ID in URL
+            if (docIdFromUrl) {
+                document.getElementById('docIdInput').value = docIdFromUrl;
+                handleValidation(new Event('submit'));
+            }
+            
+            // Setup form
+            const validateForm = document.getElementById('validateForm');
+            if (validateForm) {
+                validateForm.addEventListener('submit', handleValidation);
+            }
+            
+            // Auto focus
+            const docIdInput = document.getElementById('docIdInput');
+            if (docIdInput && !docIdFromUrl) {
+                docIdInput.focus();
+            }
+        });
+
+        async function handleValidation(event) {
+            event.preventDefault();
+            
+            const docIdInput = document.getElementById('docIdInput');
+            const validateButton = document.getElementById('validateButton');
+            const validateButtonText = document.getElementById('validateButtonText');
+            
+            const docId = docIdInput.value.trim();
+            
+            if (!docId) {
+                showAlert('Mohon masukkan ID Dokumen', 'error');
+                return;
+            }
+            
+            // Set loading
+            validateButton.disabled = true;
+            validateButtonText.innerHTML = '<span class="login-loading"><span class="login-spinner"></span> Memvalidasi...</span>';
+            hideAlert();
+            
+            try {
+                const response = await callAPI('validateDocument', { docId });
+                
+                if (response.success) {
+                    showValidationResult(response);
+                } else {
+                    showAlert(response.message || 'Dokumen tidak ditemukan', 'error');
+                    validateButton.disabled = false;
+                    validateButtonText.textContent = 'Validasi Dokumen';
+                }
+            } catch (error) {
+                console.error('Validation error:', error);
+                showAlert('Terjadi kesalahan saat memvalidasi dokumen', 'error');
+                validateButton.disabled = false;
+                validateButtonText.textContent = 'Validasi Dokumen';
+            }
+        }
+
+        function showValidationResult(data) {
+            const { document, signatures } = data;
+            
+            // Hide search form
+            document.getElementById('searchForm').classList.add('hidden');
+            
+            // Show result
+            const resultDiv = document.getElementById('validationResult');
+            resultDiv.classList.remove('hidden');
+            
+            const isValid = signatures && signatures.length > 0;
+            const statusClass = isValid ? 'valid' : 'invalid';
+            const statusIcon = isValid ? '✅' : '❌';
+            const statusText = isValid ? 'Dokumen Valid' : 'Dokumen Tidak Valid';
+            
+            let resultHTML = `
+                <div class="validation-header">
+                    <div class="validation-icon ${statusClass}">${statusIcon}</div>
+                    <span class="validation-status ${statusClass}">${statusText}</span>
+                    <p class="text-sm text-gray" style="margin-top: var(--spacing-md);">
+                        ${isValid ? 'Dokumen ini telah ditandatangani secara digital dan terverifikasi.' : 'Dokumen ini belum ditandatangani atau tidak valid.'}
+                    </p>
+                </div>
+                
+                <div class="validation-info">
+                    <h4 style="margin-bottom: var(--spacing-md);">Informasi Dokumen</h4>
+                    
+                    <div class="validation-info-row">
+                        <span class="validation-info-label">ID Dokumen:</span>
+                        <span class="validation-info-value">${document.doc_id}</span>
+                    </div>
+                    
+                    <div class="validation-info-row">
+                        <span class="validation-info-label">Judul:</span>
+                        <span class="validation-info-value">${document.doc_title}</span>
+                    </div>
+                    
+                    <div class="validation-info-row">
+                        <span class="validation-info-label">Tipe:</span>
+                        <span class="validation-info-value">${getDocTypeLabel(document.doc_type)}</span>
+                    </div>
+                    
+                    <div class="validation-info-row">
+                        <span class="validation-info-label">Periode:</span>
+                        <span class="validation-info-value">${document.doc_month} ${document.doc_year}</span>
+                    </div>
+                    
+                    <div class="validation-info-row">
+                        <span class="validation-info-label">Status:</span>
+                        <span class="validation-info-value">
+                            <span class="badge badge-${document.status === 'completed' ? 'success' : 'primary'}">
+                                ${getStatusLabel(document.status)}
+                            </span>
+                        </span>
+                    </div>
+                    
+                    <div class="validation-info-row">
+                        <span class="validation-info-label">Total Tanda Tangan:</span>
+                        <span class="validation-info-value">${signatures.length} dari ${document.total_signers}</span>
+                    </div>
+                </div>
+            `;
+            
+            if (signatures.length > 0) {
+                resultHTML += `
+                    <div class="signatures-list">
+                        <h4 style="margin-bottom: var(--spacing-md);">Daftar Penandatangan</h4>
+                `;
+                
+                signatures.forEach(sig => {
+                    const signedDate = formatDateIndo(new Date(sig.signed_at));
+                    resultHTML += `
+                        <div class="signature-item">
+                            <span class="signature-check">✓</span>
+                            <div class="signature-details">
+                                <div class="signature-name">${sig.nama}</div>
+                                <div class="signature-time">
+                                    NIP: ${sig.nip} • Ditandatangani pada ${signedDate.full}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultHTML += `</div>`;
+            }
+            
+            resultDiv.innerHTML = resultHTML;
+        }
+
+        function getDocTypeLabel(type) {
+            const labels = {
+                'penerimaan_gaji': 'Penerimaan Gaji',
+                'slip_gaji': 'Slip Gaji',
+                'dokumen_umum': 'Dokumen Umum'
+            };
+            return labels[type] || type;
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'draft': 'Draft',
+                'sent': 'Terkirim',
+                'completed': 'Selesai',
+                'expired': 'Kadaluarsa'
+            };
+            return labels[status] || status;
+        }
+
+        function resetValidation() {
+            document.getElementById('searchForm').classList.remove('hidden');
+            document.getElementById('validationResult').classList.add('hidden');
+            document.getElementById('docIdInput').value = '';
+            document.getElementById('validateButton').disabled = false;
+            document.getElementById('validateButtonText').textContent = 'Validasi Dokumen';
+            hideAlert();
+        }
+
+        async function callAPI(action, data) {
+            const response = await fetch(CONFIG.API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, data })
+            });
+            return await response.json();
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertEl = document.getElementById('searchAlert');
+            if (alertEl) {
+                alertEl.textContent = message;
+                alertEl.className = `login-alert login-alert-${type}`;
+                alertEl.classList.remove('hidden');
+            }
+        }
+
+        function hideAlert() {
+            const alertEl = document.getElementById('searchAlert');
+            if (alertEl) alertEl.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
